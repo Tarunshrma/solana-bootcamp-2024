@@ -1,17 +1,18 @@
 use anchor_lang::prelude::*;
 
-declare_id!("6z68wfurCMYkZG51s1Et9BJEd9nJGUusjHXNt4dGbNNF");
+declare_id!("96EgiUrjjEBLE5BuZppisACZH4SfFPsR5RYQKqr7MugN");
 
 #[program]
-pub mod voting {
+pub mod Voting {
     use super::*;
 
-    pub fn initilize_poll(ctx: Context<InitializePoll>, poll_id:u64, 
-                                                        poll_name:String, 
-                                                        poll_description:String,
-                                                        start_date:u64,
-                                                        end_date: u64,
-                                                        poll_option_index: u64) -> Result<()> {
+    pub fn initilize_poll(ctx: Context<InitializePoll>,
+                                        poll_id:u64, 
+                                        poll_name:String, 
+                                        poll_description:String,
+                                        start_date:u64,
+                                        end_date: u64,
+                                        poll_option_index: u64) -> Result<()> {
         msg!("Initilizing poll with id: {}", poll_id);
         ctx.accounts.poll.poll_id = poll_id;
         ctx.accounts.poll.poll_name = poll_name;
