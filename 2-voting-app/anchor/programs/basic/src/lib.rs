@@ -6,8 +6,19 @@ declare_id!("6z68wfurCMYkZG51s1Et9BJEd9nJGUusjHXNt4dGbNNF");
 pub mod voting {
     use super::*;
 
-    pub fn initilize_poll(_ctx: Context<InitializePoll>, poll_id:u64) -> Result<()> {
+    pub fn initilize_poll(ctx: Context<InitializePoll>, poll_id:u64, 
+                                                        poll_name:String, 
+                                                        poll_description:String,
+                                                        start_date:u64,
+                                                        end_date: u64,
+                                                        poll_option_index: u64) -> Result<()> {
         msg!("Initilizing poll with id: {}", poll_id);
+        ctx.accounts.poll.poll_id = poll_id;
+        ctx.accounts.poll.poll_name = poll_name;
+        ctx.accounts.poll.poll_description = poll_description;
+        ctx.accounts.poll.start_date = start_date;
+        ctx.accounts.poll.end_date = end_date;
+        ctx.accounts.poll.poll_option_index = poll_option_index;
         Ok(())
     }
 

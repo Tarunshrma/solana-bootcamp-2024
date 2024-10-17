@@ -55,6 +55,26 @@
         {
           "name": "poll_id",
           "type": "u64"
+        },
+        {
+          "name": "poll_name",
+          "type": "string"
+        },
+        {
+          "name": "poll_description",
+          "type": "string"
+        },
+        {
+          "name": "start_date",
+          "type": "u64"
+        },
+        {
+          "name": "end_date",
+          "type": "u64"
+        },
+        {
+          "name": "poll_option_index",
+          "type": "u64"
         }
       ]
     }
