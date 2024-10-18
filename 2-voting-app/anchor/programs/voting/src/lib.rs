@@ -23,6 +23,16 @@ pub mod Voting {
         Ok(())
     }
 
+    pub fn initilize_candidate(ctx: Context<InitializeCandidate>,
+                                        _poll_id:u64,
+                                        candidate_name:String) -> Result<()> {
+
+        msg!("Initilizing candidate with id: {}", candidate_name);
+        ctx.accounts.candidate.candidate_name = candidate_name;
+        ctx.accounts.poll_account.poll_option_index += 1;
+        Ok(())
+    }
+
     #[derive(Accounts)]
     #[instruction(poll_id: u64)]
     pub struct InitializePoll<'info> {
@@ -39,6 +49,34 @@ pub mod Voting {
         pub poll: Account<'info, PollAccount>,
 
         pub system_program: Program<'info, System>,
+    }
+
+    #[derive(Accounts)]
+    #[instruction(poll_id: u64, candidate_name: String)]
+    pub struct InitializeCandidate<'info>{
+        #[account(mut)]
+        pub user: Signer<'info>,
+
+        pub poll_account: Account<'info, PollAccount>,
+
+        #[account(
+            init_if_needed,
+            payer = user,
+            space = 8 + CandidateAccount::INIT_SPACE,
+            seeds = [poll_id.to_le_bytes().as_ref(), candidate_name.as_ref()],
+            bump,
+        )]
+        pub candidate: Account<'info, CandidateAccount>,
+
+        pub system_program: Program<'info, System>,
+    }
+
+    #[account]
+    #[derive(InitSpace)]
+    pub struct CandidateAccount{
+        #[max_len(50)]
+        pub candidate_name: String,
+        pub candidate_votes: u64,
     }
 
     #[account]

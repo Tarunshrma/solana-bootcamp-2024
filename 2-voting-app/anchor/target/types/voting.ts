@@ -14,6 +14,59 @@ export type Voting = {
   },
   "instructions": [
     {
+      "name": "initilizeCandidate",
+      "discriminator": [
+        220,
+        166,
+        65,
+        70,
+        38,
+        26,
+        98,
+        4
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "pollAccount"
+        },
+        {
+          "name": "candidate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "pollId"
+              },
+              {
+                "kind": "arg",
+                "path": "candidateName"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "pollId",
+          "type": "u64"
+        },
+        {
+          "name": "candidateName",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "initilizePoll",
       "discriminator": [
         198,
@@ -87,6 +140,19 @@ export type Voting = {
   ],
   "accounts": [
     {
+      "name": "candidateAccount",
+      "discriminator": [
+        69,
+        203,
+        73,
+        43,
+        203,
+        170,
+        96,
+        121
+      ]
+    },
+    {
       "name": "pollAccount",
       "discriminator": [
         109,
@@ -101,6 +167,22 @@ export type Voting = {
     }
   ],
   "types": [
+    {
+      "name": "candidateAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "candidateName",
+            "type": "string"
+          },
+          {
+            "name": "candidateVotes",
+            "type": "u64"
+          }
+        ]
+      }
+    },
     {
       "name": "pollAccount",
       "type": {
