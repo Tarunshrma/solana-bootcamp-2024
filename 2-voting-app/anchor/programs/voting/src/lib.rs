@@ -33,6 +33,50 @@ pub mod Voting {
         Ok(())
     }
 
+    pub fn vote(ctx:Context<Vote>, _poll_id: u64, candidate_name: String) -> Result<()>{
+        msg!("Voting for candidate: {}", candidate_name);
+        let current_time = Clock::get()?.unix_timestamp;
+
+        let start_date = ctx.accounts.poll_account.start_date as i64;
+        let end_date = ctx.accounts.poll_account.end_date as i64;
+
+        if current_time < start_date {
+            return Err(ErrorCode::VotingNotStarted.into());
+        }
+
+        if current_time > end_date {
+            return Err(ErrorCode::VotingEnded.into());
+        }
+
+        let candidate = &mut ctx.accounts.canidate_account;
+        candidate.candidate_votes += 1;
+
+        Ok(())
+    }
+
+    #[derive(Accounts)]
+    #[instruction(poll_id: u64, candidate_name: String)]
+    pub struct Vote<'info>{
+        #[account(mut)]
+        pub user: Signer<'info>,
+
+
+        #[account(
+            mut,
+            seeds = [b"poll".as_ref(), poll_id.to_le_bytes().as_ref()],
+            bump,
+        )]
+        pub poll_account: Account<'info, PollAccount>, 
+
+        #[account(
+            mut,
+            seeds = [poll_id.to_le_bytes().as_ref(), candidate_name.as_ref()],
+            bump,
+        )]
+        pub canidate_account: Account<'info, CandidateAccount>, 
+    }
+
+
     #[derive(Accounts)]
     #[instruction(poll_id: u64)]
     pub struct InitializePoll<'info> {
@@ -90,6 +134,14 @@ pub mod Voting {
         pub start_date: u64,
         pub end_date: u64,
         pub poll_option_index: u64,
+    }
+
+    #[error_code]
+    pub enum ErrorCode {
+        #[msg("Voting has not started yet")]
+        VotingNotStarted,
+        #[msg("Voting has ended")]
+        VotingEnded,
     }
 }
 
