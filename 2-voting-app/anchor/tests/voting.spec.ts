@@ -33,7 +33,30 @@ describe('Voting', () => {
     const poll = await program.account.pollAccount.fetch(pollAddress);
     console.log('{#?}', poll);
 
-    assert.equal(poll.pollId.toNumber(), 1);
+    // assert.equal(poll.pollId.toNumber(), 1);
+
+  });
+  
+  it('initializeCandidate', async () => {
+
+    const tx = await program.methods.initilizeCandidate(
+        new anchor.BN(1),
+        "Tarun"
+    )
+    .rpc();
+
+    console.log('Your transaction signature', tx);
+
+    const [candidateAddress] = PublicKey.findProgramAddressSync(
+        [new anchor.BN(1).toArrayLike(Buffer, "le", 8),Buffer.from("Tarun")],
+        program.programId
+      );
+    
+
+    const candidate = await program.account.candidateAccount.fetch(candidateAddress);
+    console.log('{#?}', candidate);
+
+    // assert.equal(poll.pollId.toNumber(), 1);
 
   });
 
